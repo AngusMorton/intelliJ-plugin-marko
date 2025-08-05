@@ -1,15 +1,47 @@
 <!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
 <idea-plugin>
-    <id>org.jetbrains.plugins.template</id>
-    <name>IntelliJ Platform Plugin Template</name>
-    <vendor>JetBrains</vendor>
+    <id>com.github.angusmorton.intellij.marko</id>
+    <name>intelliJ-plugin-marko</name>
+    <vendor>Angus Morton</vendor>
 
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <!-- Only support ultimate for now, we'll do backwards compatibility later. -->
+    <depends>com.intellij.modules.ultimate</depends>
+    <depends>JavaScript</depends>
+    <!-- Use TextMate for syntax highlighting because the LSP doesn't support sematic tokens. -->
+    <depends>org.jetbrains.plugins.textmate</depends>
 
-    <resource-bundle>messages.MyBundle</resource-bundle>
+    <resource-bundle>messages.MarkoBundle</resource-bundle>
 
     <extensions defaultExtensionNs="com.intellij">
-        <toolWindow factoryClass="org.jetbrains.plugins.template.toolWindow.MyToolWindowFactory" id="MyToolWindow"/>
-        <postStartupActivity implementation="org.jetbrains.plugins.template.startup.MyProjectActivity" />
+        <fileType
+            name="marko"
+            language="marko"
+            implementationClass="com.angusmorton.intellij.marko.lang.MarkoFileType"
+            extensions="marko"
+            fieldName="INSTANCE"
+        />
+
+        <!-- Native LSP support for commercial versions of IntelliJ IDEs -->
+        <platform.lsp.serverSupportProvider implementation="com.angusmorton.intellij.marko.ide.lsp.MarkoLspServerSupportProvider" />
+        <registryKey defaultValue="" description="Marko LSP version for downloading" key="marko.language.server.default.version" />
+
+        <!--
+            This is insane, but `editorHighlighterProvider` and `lang.syntaxHighlighterFactory` are required because
+            defining a custom file type breaks the association of a TextMate grammar with the file.
+            https://intellij-support.jetbrains.com/hc/en-us/community/posts/360008202719/comments/8966725380242
+        -->
+        <editorHighlighterProvider
+                filetype="marko"
+                implementationClass="org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateEditorHighlighterProvider"
+        />
+        <lang.syntaxHighlighterFactory
+                language="marko"
+                implementationClass="org.jetbrains.plugins.textmate.language.syntax.highlighting.TextMateSyntaxHighlighterFactory"
+        />
+        <textmate.bundleProvider
+                implementation="com.angusmorton.intellij.marko.ide.highlighting.MarkoTextMateBundleProvider"
+        />
     </extensions>
 </idea-plugin>

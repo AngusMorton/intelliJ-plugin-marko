@@ -1,0 +1,47 @@
+{
+  "name": "marko",
+  "description": "Marko",
+  "version": "2.0.3",
+  "contributes": {
+    "languages": [
+      {
+        "id": "marko",
+        "aliases": [
+          "Marko",
+          "marko"
+        ],
+        "extensions": [
+          ".marko"
+        ],
+        "configuration": "./marko.configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "marko",
+        "scopeName": "text.marko",
+        "path": "./syntaxes/marko.tmLanguage.json",
+        "embeddedLanguages": {
+          "source.css": "css",
+          "source.less": "less",
+          "source.scss": "scss",
+          "source.ts": "typescript"
+        }
+      },
+      {
+        "scopeName": "embedded.marko.block",
+        "path": "./syntaxes/embedded.marko.tmLanguage.json",
+        "injectTo": [
+          "text.html.markdown",
+          "source.mdx"
+        ],
+        "embeddedLanguages": {
+          "meta.embedded.block.marko": "marko"
+        },
+        "tokenTypes": {
+          "meta.embedded.block.marko": "other"
+        }
+      }
+    ]
+  }
+}
